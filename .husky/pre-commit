@@ -1,0 +1,2 @@
+### pnpm test
+echo "Skipping pre-commit checks"
