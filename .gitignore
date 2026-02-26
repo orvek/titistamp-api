@@ -10,3 +10,6 @@
 ###< symfony/framework-bundle ###
 /node_modules/
 *.lock
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
