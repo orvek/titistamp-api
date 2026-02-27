@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -43,11 +45,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    /**
+     * @var Collection<int, Stamp>
+     */
+    #[ORM\OneToMany(targetEntity: Stamp::class, mappedBy: 'user')]
+    private Collection $stamps;
+
+    /**
+     * @var Collection<int, Commerce>
+     */
+    #[ORM\OneToMany(targetEntity: Commerce::class, mappedBy: 'owner')]
+    private Collection $commerces;
+
+    /**
+     * @var Collection<int, Swap>
+     */
+    #[ORM\OneToMany(targetEntity: Swap::class, mappedBy: 'user')]
+    private Collection $swaps;
+
     public function __construct()
     { 
         $this->active = true;
         $this->createdAt = new \DateTime(date('Y-m-d H:i:s'));
         $this->updatedAt = new \DateTime(date('Y-m-d H:i:s'));
+        $this->stamps = new ArrayCollection();
+        $this->commerces = new ArrayCollection();
+        $this->swaps = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -194,7 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-        /**
+    /**
      * ISO 8601 (DATE_ATOM)
      */
     public function getCreatedAtFormatted(): ?string
@@ -208,6 +231,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUpdatedAtFormatted(): ?string
     {
         return $this->updatedAt?->format(DATE_ATOM);
+    }
+
+    /**
+     * @return Collection<int, Stamp>
+     */
+    public function getStamps(): Collection
+    {
+        return $this->stamps;
+    }
+
+    public function addStamp(Stamp $stamp): static
+    {
+        if (!$this->stamps->contains($stamp)) {
+            $this->stamps->add($stamp);
+            $stamp->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStamp(Stamp $stamp): static
+    {
+        if ($this->stamps->removeElement($stamp)) {
+            // set the owning side to null (unless already changed)
+            if ($stamp->getUser() === $this) {
+                $stamp->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commerce>
+     */
+    public function getCommerces(): Collection
+    {
+        return $this->commerces;
+    }
+
+    public function addCommerce(Commerce $commerce): static
+    {
+        if (!$this->commerces->contains($commerce)) {
+            $this->commerces->add($commerce);
+            $commerce->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommerce(Commerce $commerce): static
+    {
+        if ($this->commerces->removeElement($commerce)) {
+            // set the owning side to null (unless already changed)
+            if ($commerce->getOwner() === $this) {
+                $commerce->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Swap>
+     */
+    public function getSwaps(): Collection
+    {
+        return $this->swaps;
+    }
+
+    public function addSwap(Swap $swap): static
+    {
+        if (!$this->swaps->contains($swap)) {
+            $this->swaps->add($swap);
+            $swap->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSwap(Swap $swap): static
+    {
+        if ($this->swaps->removeElement($swap)) {
+            // set the owning side to null (unless already changed)
+            if ($swap->getUser() === $this) {
+                $swap->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
 }

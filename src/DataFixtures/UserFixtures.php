@@ -34,13 +34,20 @@ class UserFixtures extends Fixture
                 'name' => "Empresa",
                 'lastname' => "Rubro uno",
                 'username' => "empresa@titistamp.com",
-                'role' => ["ROLE_BUSINESS"],
+                'role' => ["ROLE_COMMERCE"],
             ],
             [
                 'identifier' => 3,
                 'name' => "User",
                 'lastname' => "Example",
                 'username' => "user@titistamp.com",
+                'role' => ["ROLE_USER"],
+            ],
+            [
+                'identifier' => 4,
+                'name' => "User 2",
+                'lastname' => "Example",
+                'username' => "user2@titistamp.com",
                 'role' => ["ROLE_USER"],
             ]
         ];
